@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 
 
-let nextVisitorId = 1;
+
 
 
 // The main page of our website
@@ -123,15 +123,28 @@ let nextVisitorId = 1;
 // the main page with visitorId cookie
 
 app.get('/', (req, res) => {
-  let lastVisit = req.cookies.visited ? (parseInt((Date.now() - req.cookies.visited)/1000)) : -1;
-  let visitorId = !req.cookies.visitorId ? nextVisitorId++ : req.cookies.visitorId;
+  let lastVisit = req.cookies.visited;
+  let visitorId = req.cookies.visitorId;
+  let nextVisitorId = 1;
+
+  if (lastVisit) {
+    lastVisit = (parseInt((Date.now() - req.cookies.visited)/1000));
+  }
+  else {
+    lastVisit = -1;
+  }
   if (lastVisit >= 0) {
     msg = "It has been " + lastVisit+" seconds since your last visit!";
   }
   else {
     msg = "You have never visited before, Welcome to this site!";
   }
-
+  if (visitorId === undefined) {
+    visitorId =  nextVisitorId++;
+  }
+  else {
+    visitorId =  req.cookies.visitorId;
+  }
 
   res.cookie('visitorId', visitorId);
   res.cookie('visited', Date.now().toString());
