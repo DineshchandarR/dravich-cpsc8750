@@ -11,6 +11,8 @@ const app = express();
 // first, that is for when this is used on the real
 // world wide web).
 const port = process.env.PORT || 3000;
+const cookieParser = require('cookie-parser');
+
 
 
 // The main page of our website
@@ -91,15 +93,29 @@ const port = process.env.PORT || 3000;
 //   res.render('welcome', {
 //     name: req.query.name || "World",
 //   });
+// }); 
+
+// //safer way
+// app.get('/', (req, res) => {
+//   res.render('welcome', {
+//     name: req.query.name || "World",
+//   });
 //   res.cookie('visited', Date.now().toString());
 // }); 
 
-// the main page with cookie
+// the main page with visitorId cookie
 app.get('/', (req, res) => {
-  res.cookie('visitorId', nextVisitorId++);
+  let lastVisit = req.cookies.visited ? (parseInt((Date.now() - req.cookies.visited)/1000)) : -1;
+  let visitorId = !req.cookies.visitorId ? nextVisitorId++ : req.cookies.visitorId;
+  res.cookie('visitorId', visitorId);
   res.cookie('visited', Date.now().toString());
-  res.render('welcome', /* params */)
-});
+  res.render('welcome', {
+        name: req.query.name || "World",
+        date: new Date().toLocaleString(),
+        lastVisit,
+        visitorId
+      });
+}); 
 
 //To allow sever to use public folder
 app.use(express.static('public'));
@@ -112,3 +128,6 @@ console.log("Server Started!");
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
+
+//Cookie Parser
+app.use(cookieParser());
