@@ -1,7 +1,6 @@
 // use the express library
 const express = require('express');
-
-let nextVisitorId = 1;
+const cookieParser = require('cookie-parser');
 
 // create a new server application
 const app = express();
@@ -11,8 +10,26 @@ const app = express();
 // first, that is for when this is used on the real
 // world wide web).
 const port = process.env.PORT || 3000;
-const cookieParser = require('cookie-parser');
 
+//To allow sever to use public folder
+app.use(express.static('public'));
+
+// Start listening for network connections
+app.listen(port);
+
+// Printout for readability
+console.log("Server Started!");
+
+// set the view engine to ejs
+app.set('view engine', 'ejs');
+
+//Cookie Parser
+app.use(cookieParser());
+
+
+
+
+let nextVisitorId = 1;
 
 
 // The main page of our website
@@ -104,30 +121,17 @@ const cookieParser = require('cookie-parser');
 // }); 
 
 // the main page with visitorId cookie
+
 app.get('/', (req, res) => {
   let lastVisit = req.cookies.visited ? (parseInt((Date.now() - req.cookies.visited)/1000)) : -1;
   let visitorId = !req.cookies.visitorId ? nextVisitorId++ : req.cookies.visitorId;
+
   res.cookie('visitorId', visitorId);
   res.cookie('visited', Date.now().toString());
   res.render('welcome', {
         name: req.query.name || "World",
         date: new Date().toLocaleString(),
-        lastVisit,
-        visitorId
+        lastVisit : lastVisit ,
+        visitorId : visitorId
       });
 }); 
-
-//To allow sever to use public folder
-app.use(express.static('public'));
-
-// Start listening for network connections
-app.listen(port);
-
-// Printout for readability
-console.log("Server Started!");
-
-// set the view engine to ejs
-app.set('view engine', 'ejs');
-
-//Cookie Parser
-app.use(cookieParser());
