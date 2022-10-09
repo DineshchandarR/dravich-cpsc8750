@@ -125,6 +125,13 @@ let nextVisitorId = 1;
 app.get('/', (req, res) => {
   let lastVisit = req.cookies.visited ? (parseInt((Date.now() - req.cookies.visited)/1000)) : -1;
   let visitorId = !req.cookies.visitorId ? nextVisitorId++ : req.cookies.visitorId;
+  if (lastVisit >= 0) {
+    msg = "It has been " + lastVisit+" seconds since your last visit!";
+  }
+  else {
+    msg = "You have never visited before, Welcome to this site!";
+  }
+
 
   res.cookie('visitorId', visitorId);
   res.cookie('visited', Date.now().toString());
@@ -132,6 +139,7 @@ app.get('/', (req, res) => {
         name: req.query.name || "World",
         date: new Date().toLocaleString(),
         lastVisit : lastVisit ,
-        visitorId : visitorId
+        visitorId : visitorId,
+        msg: msg
       });
 }); 
