@@ -33,3 +33,19 @@ body p {
   font-weight: 50;
   text-align: left; 
 }
+
+body li {
+  font-size: 1rem;
+  background: #b44c3a;
+  background: -webkit-linear-gradient(-225deg #4b047a, #fd9504, #fd9504,#4b047a);
+  background: linear-gradient(-225deg, #4b047a, #fd9504, #fd9504,#4b047a);
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  margin-top: 1rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.35s;
+  outline: none;
+  color: white;
+}
